@@ -110,14 +110,13 @@ public class PositionAwareRunLengthEncoding16Bits {
 	 * 		   If something go wrong char[] is null
 	 */
 	public static char[] setValueAt(char[] parleValues, char index, char value){
-		char[] newValue;
 		char[] result = null;
 		//instead of below for there could be a binary search to optimize searching
 		for(char i=0;i<parleValues.length;i+=3){
 			if(parleValues[i]-1+parleValues[i+1]>=index){
-				char[] d=decode(new char[]{parleValues[i],parleValues[i+1],parleValues[i+2]});
-				
-				if(d.length==1){
+				//char[] d=decode(new char[]{parleValues[i],parleValues[i+1],parleValues[i+2]});
+				//the modified group being only a single length
+				if(parleValues[i]==1){
 					//left and right group
 					if((i-1>0 && parleValues[i-1]==value) && (i+5<parleValues.length && parleValues[i+5]==value)){
 						result=new char[parleValues.length-6];
@@ -152,7 +151,9 @@ public class PositionAwareRunLengthEncoding16Bits {
 
 					}
 				}
+				//being at the start of the modified group
 				else{
+					char[] newValue;
 					char position=(char) (index-parleValues[i+1]);
 					if(position==0){
 						//need check left group if the same!!!
@@ -173,8 +174,9 @@ public class PositionAwareRunLengthEncoding16Bits {
 							result[i+4]+=1;					
 						}
 					}
+					//being at the end of the modified group
 					else{
-						if(d.length==position+1){
+						if(parleValues[i]==position+1){
 							//need check right group if the same!!!
 							if(i+5<parleValues.length && parleValues[i+5]==value){
 								result=new char[parleValues.length];
@@ -193,13 +195,15 @@ public class PositionAwareRunLengthEncoding16Bits {
 							}
 						}
 						else{
-							d[position]=value;						
-							newValue=encodeWithOffset(d,parleValues[i+1]);
+							//being in the middle of the modified group
+							newValue=encodeWithOffset(new char[]{value},index);
 							result=new char[parleValues.length+6];
-							System.arraycopy(parleValues, 0, result, 0, i);
-							System.arraycopy(newValue, 0, result, i, newValue.length);
-							System.arraycopy(parleValues, i+3, result, i+9,parleValues.length-i-3);
-							
+							System.arraycopy(parleValues, 0, result, 0, i+3);
+							System.arraycopy(newValue, 0, result, i+3, newValue.length);
+							System.arraycopy(parleValues, i, result, i+6,parleValues.length-i);
+							result[i]=position;
+							result[i+6]=(char) (parleValues[i]-(position+1));
+							result[i+7]+=position+1;
 						}
 					}
 					
