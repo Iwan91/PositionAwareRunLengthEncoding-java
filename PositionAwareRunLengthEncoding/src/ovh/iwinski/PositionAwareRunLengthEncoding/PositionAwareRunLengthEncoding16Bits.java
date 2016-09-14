@@ -70,7 +70,7 @@ public class PositionAwareRunLengthEncoding16Bits {
 	 */
 	public static char[] decode(char[] parleValues) {
 		String result="";
-		for(char i=0;i<parleValues.length;i+=3){
+		for(int i=0;i<parleValues.length;i+=3){
 			for(char j=0;j<parleValues[i];j++){
 				result+=parleValues[i+2];
 			}
