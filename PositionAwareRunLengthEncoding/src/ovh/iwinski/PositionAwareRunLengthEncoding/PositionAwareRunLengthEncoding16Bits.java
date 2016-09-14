@@ -36,7 +36,7 @@ public class PositionAwareRunLengthEncoding16Bits {
 		String result="";
 		char position=0;
 		char[] groups=groupBy(values);
-		for(char i=0;i<groups.length;i+=2){
+		for(int i=0;i<groups.length;i+=2){
 			result+=groups[i+1]; //length
 			result+=(char)(position+offset); //position
 			result+=groups[i]; //name
@@ -46,12 +46,12 @@ public class PositionAwareRunLengthEncoding16Bits {
 		return result.toCharArray();
 	}
 	
-	// max size of input array is 65536
+	// max size of input array is 65535
 	//return array = [length1, position1, name1, length2, position2, name2, ...]
 	/**
 	 * Encode sequence
 	 * @param  values to encode.<br>
-	 *         Max length of <strong>values</strong> can be 65536.
+	 *         Max length of <strong>values</strong> can be 65535.
 	 * @return Return encoded sequence as char[].<br>
 	 * 	 	   Return char[] length is 3*values.length.<br>
 	 * 		   Sequence is [length1, position1, value1, length2, position2, value2, ...]
@@ -63,7 +63,7 @@ public class PositionAwareRunLengthEncoding16Bits {
 	/**
 	 * Decode sequence
 	 * @param  parleValues must be divisible by 3.<br>
-	 *         Max length of <strong>parleValues</strong> can be 196608.
+	 *         Max length of <strong>parleValues</strong> can be 196605.
 	 * @return Return char[] with decoded values.<br>
 	 * 		   Return char[] length is parleValues.length/3.<br>
 	 * 		   Sequence is [value1, value2, ...]
@@ -83,10 +83,10 @@ public class PositionAwareRunLengthEncoding16Bits {
 		char high = (char) ((parleValues.length - 1)/3);
 		char mid;
 		while (low <= high) {
-			mid = (char) (low + (high - low) / 6);
+			mid = (char) (low + (high - low) / 2);
 			
 			if(parleValues[mid*3+1]<=index && index<= parleValues[mid*3]-1+parleValues[mid*3+1])
-				return (char) (mid*3);
+				return mid*3;
 			
 			if (parleValues[mid*3]-1+parleValues[mid*3+1] >= index)
 				high = (char) (mid - 1);
@@ -102,18 +102,18 @@ public class PositionAwareRunLengthEncoding16Bits {
 	/**
 	 * Get value at index in sequence (naive algorithm)
 	 * @param  parleValues must be divisible by 3.<br>
-	 *         Max length of <strong>parleValues</strong> can be 196608.
+	 *         Max length of <strong>parleValues</strong> can be 196605.
 	 * @param  index get value at index
 	 * @return Return char as int<br>
 	 * 		   If found index then return char with value<br>
 	 * 		   else return -1<br>
 	 */
 	public static int getValueAtNaiveAlgorithm(char[] parleValues, char index){
-		for(char i=0;i<parleValues.length;i+=3){
+		for(int i=0;i<parleValues.length;i+=3){
 			if(parleValues[i]-1+parleValues[i+1]>=index){
 				return parleValues[i+2];
 			}
-		}
+		}			
 		return -1;
 	}
 
@@ -121,7 +121,7 @@ public class PositionAwareRunLengthEncoding16Bits {
 	/**
 	 * Get value at index in sequence (faster algorithm)
 	 * @param  parleValues must be divisible by 3.<br>
-	 *         Max length of <strong>parleValues</strong> can be 196608.
+	 *         Max length of <strong>parleValues</strong> can be 196605.
 	 * @param  index get value at index
 	 * @return Return char as int<br>
 	 * 		   If found index then return char with value<br>
@@ -135,7 +135,7 @@ public class PositionAwareRunLengthEncoding16Bits {
 	/**
 	 * Set value at index in sequence (faster algorithm)
 	 * @param  parleValues must be divisible by 3.<br>
-	 *         Max length of <strong>parleValues</strong> can be 196608.
+	 *         Max length of <strong>parleValues</strong> can be 196605.
 	 * @param  index set value at index
 	 * @param  value to set
 	 * @return Return new encoded char[] with changed value at index.<br>
@@ -251,7 +251,7 @@ public class PositionAwareRunLengthEncoding16Bits {
 	/**
 	 * Set value at index in sequence (naive algorithm)
 	 * @param  parleValues must be divisible by 3.<br>
-	 * 		   Max length of <strong>parleValues</strong> can be 196608.
+	 * 		   Max length of <strong>parleValues</strong> can be 196605.
 	 * @param  index set value at index
 	 * @param  value to set
 	 * @return Return new encoded char[] with changed value at index.<br>
