@@ -11,6 +11,7 @@ char[] toEncode="AABBWWSD".toCharArray();
 char[] encoded=PositionAwareRunLengthEncoding16Bits.encode(toEncode);
 
 
+//This is faster algorithm to get value at index
 //Input char[] must be divisible by 3.
 //Max length of input char[] can be 196608.
 //Return char as int.
@@ -24,6 +25,18 @@ if(valueInt==-1)
 else
   valueChar=(char)valueInt;
 
+//This is naive algorithm to get value at index
+//Input char[] must be divisible by 3.
+//Max length of input char[] can be 196608.
+//Return char as int.
+//If found index then return char with value
+//else return -1
+int valueInt2=PositionAwareRunLengthEncoding16Bits.getValueAtNaiveAlgorithm(encoded, index);
+char valueChar2;
+if(valueInt2==-1)
+  System.out.println("Not found value at index="+(int)index);
+else
+  valueChar2=(char)valueInt2;
 
 //This is faster algorithm to change value at index
 //Input char[] must be divisible by 3.
