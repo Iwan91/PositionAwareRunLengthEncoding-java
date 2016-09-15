@@ -80,7 +80,7 @@ public class PositionAwareRunLengthEncoding16Bits {
 
 	private static int binarySearchLeft(char[] parleValues, char index){
 		char low = 0;
-		char high = (char) ((parleValues.length - 1)/3);
+		char high = (char) (parleValues.length/3 - 1);
 		char mid;
 		while (low <= high) {
 			mid = (char) (low + (high - low) / 2);
